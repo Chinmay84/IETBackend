@@ -12,6 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,12 +52,13 @@ public class AuthController
 			List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
 					.collect(Collectors.toList());
 			loginResponse = new LoginResponse(
+										
 										jwtUtil.generateToken(loginRequest.getEmail()),
 										loginRequest.getEmail(),
 										roles.contains("ROLE_ADMIN"),
-										roles.contains("ROLE_USER"),
-										roles.contains("ROLE_DISTR_SUPERVISOR"),
-										roles.contains("ROLE_MANAGER"));
+										roles.contains("ROLE_USER")
+										);
+										
 		}catch(Exception e) {
 			throw new Exception("Invalid username and password");
 		}
@@ -66,20 +68,28 @@ public class AuthController
 	
 	@PostMapping(value="/signUp")
 	public ResponseEntity<?> registerUser(@RequestBody SignUpRequest signUpRequest){
-		Optional<User> optUser=userRepository.findByEmail(signUpRequest.getEmailId());
+		Optional<User> optUser=userRepository.findByEmail(signUpRequest.getEmail());
 		if(optUser.isPresent()) {
 			return ResponseEntity.badRequest().body(new MessageResponse("Error : Username is already taken!"));
 		}
 		userService.addUser(signUpRequest);
-		return ResponseEntity.ok("user registered successfully");
+		return ResponseEntity.ok("sucessfull");
 	}
+	
 	@PostMapping(value="/signUp/admin")
 	public ResponseEntity<?> registerAdmin(@RequestBody SignUpRequest signUpRequest){
-		Optional<User> optUser=userRepository.findByEmail(signUpRequest.getEmailId());
+		
+		Optional<User> optUser=userRepository.findByEmail(signUpRequest.getEmail());
 		if(optUser.isPresent()) {
 			return ResponseEntity.badRequest().body(new MessageResponse("Error : Username is already taken!"));
 		}
 		userService.addAdmin(signUpRequest);
 		return ResponseEntity.ok("user registered successfully");
 	}
+	
+	
+	
+	
+	
+	
 }

@@ -3,8 +3,8 @@ package com.project.dto;
 import lombok.Data;
 
 @Data
-public class SignUpRequest
-{
+public class EditUser {
+
 	private String name;
 	private String mobileNo;
 	private String alernativeMobileNo;
@@ -13,7 +13,8 @@ public class SignUpRequest
 	private String password;
 	private String city;
 	private String state;
-//	private String address;
+	private String address;
 	private long pincode;
 	private String profession;
+	
 }
